@@ -213,7 +213,7 @@ export default function Bw3DCube({ scrollProgress = 0, serviceProgress = 0, isIn
       createBrushedMetalFace('3D PRODUCT', 'ANIMATION'),    // 0: 3D Product Animation
       createBrushedMetalFace('PHOTOREAL', 'CGI'),            // 1: Photoreal CGI
       createBrushedMetalFace('CAD TO', 'CGI'),               // 2: CAD to CGI
-      createBrushedMetalFace('AI VIDEO', 'PRODUCTION'),      // 3: AI Video Production
+      createBrushedMetalFace('AI VIDEO', ''),      // 3: AI Video Production
       createBrushedMetalFace('PACKAGING', '& MOCKUPS'),      // 4: Packaging & Mockups
       createBrushedMetalFace('EXHIBITION', '& BRAND'),       // 5: Exhibition & Brand
     ];

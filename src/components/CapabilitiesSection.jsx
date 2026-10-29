@@ -9,6 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 const SERVICES = [
   {
     n: '01',
+    titleLines: ['3D Product', 'Animation'],
     title: '3D Product Animation',
     desc: 'Launch films, explainers, 360° spins.',
     link: '#work',
@@ -16,6 +17,7 @@ const SERVICES = [
   },
   {
     n: '02',
+    titleLines: ['Photoreal CGI'],
     title: 'Photoreal CGI',
     desc: 'E-commerce and ad stills. No photoshoot.',
     link: '#work',
@@ -23,6 +25,7 @@ const SERVICES = [
   },
   {
     n: '03',
+    titleLines: ['CAD to CGI'],
     title: 'CAD to CGI',
     desc: 'From SolidWorks or STEP to production-true 3D.',
     link: '#inside',
@@ -30,6 +33,7 @@ const SERVICES = [
   },
   {
     n: '04',
+    titleLines: ['AI Video'],
     title: 'AI Video',
     desc: 'AI-assisted campaigns, anchored by real CGI.',
     link: '#work',
@@ -37,6 +41,7 @@ const SERVICES = [
   },
   {
     n: '05',
+    titleLines: ['Packaging'],
     title: 'Packaging',
     desc: "See it on shelf before it's printed.",
     link: '#work',
@@ -44,10 +49,11 @@ const SERVICES = [
   },
   {
     n: '06',
+    titleLines: ['Exhibition & Brand'],
     title: 'Exhibition & Brand',
     desc: 'Booths and brand spaces, built in 3D first.',
     link: '#contact',
-    cta: 'Step inside ↓',
+    cta: 'See spaces →',
   },
 ];
 
@@ -99,7 +105,7 @@ export default function CapabilitiesSection({ soundEnabled }) {
         <div className="caps-panel relative z-20 flex flex-col justify-center max-w-[480px] lg:max-w-[520px]">
           {/* Eyebrow: SERVICES · 01 / 06 */}
           <p className="font-mono font-bold text-xs sm:text-[13px] text-[#64748b] uppercase tracking-[0.22em] mb-4 select-none">
-            SERVICES · <span className="text-[#121212]">0{activeFace + 1}</span> / 06
+            SERVICES &middot; <span className="font-bold text-[#121212]">0{activeFace + 1}</span> / 06
           </p>
 
           {/* Heading, Description, and Link per active service */}
@@ -114,8 +120,13 @@ export default function CapabilitiesSection({ soundEnabled }) {
                 }`}
               >
                 {/* Main Large Headline */}
-                <h3 className="font-heading font-black text-4xl sm:text-5xl md:text-6xl lg:text-[72px] text-[#121212] tracking-tight leading-[0.98] select-none">
-                  {srv.title}
+                <h3 className="font-heading font-black text-4xl sm:text-5xl md:text-[56px] lg:text-[64px] text-[#121212] tracking-[-0.035em] leading-[1.03] select-none">
+                  {srv.titleLines.map((line, idx) => (
+                    <React.Fragment key={idx}>
+                      {idx > 0 && <br />}
+                      {line}
+                    </React.Fragment>
+                  ))}
                 </h3>
 
                 {/* Subtitle / Description */}

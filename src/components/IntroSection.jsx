@@ -10,6 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 const SERVICES = [
   {
     n: '01',
+    titleLines: ['3D Product', 'Animation'],
     title: '3D Product Animation',
     desc: 'Launch films, explainers, 360° spins.',
     link: '#work',
@@ -17,6 +18,7 @@ const SERVICES = [
   },
   {
     n: '02',
+    titleLines: ['Photoreal CGI'],
     title: 'Photoreal CGI',
     desc: 'E-commerce and ad stills. No photoshoot.',
     link: '#work',
@@ -24,6 +26,7 @@ const SERVICES = [
   },
   {
     n: '03',
+    titleLines: ['CAD to CGI'],
     title: 'CAD to CGI',
     desc: 'From SolidWorks or STEP to production-true 3D.',
     link: '#inside',
@@ -31,6 +34,7 @@ const SERVICES = [
   },
   {
     n: '04',
+    titleLines: ['AI Video'],
     title: 'AI Video',
     desc: 'AI-assisted campaigns, anchored by real CGI.',
     link: '#work',
@@ -38,6 +42,7 @@ const SERVICES = [
   },
   {
     n: '05',
+    titleLines: ['Packaging'],
     title: 'Packaging',
     desc: "See it on shelf before it's printed.",
     link: '#work',
@@ -45,10 +50,11 @@ const SERVICES = [
   },
   {
     n: '06',
+    titleLines: ['Exhibition & Brand'],
     title: 'Exhibition & Brand',
     desc: 'Booths and brand spaces, built in 3D first.',
     link: '#contact',
-    cta: 'Step inside ↓',
+    cta: 'See spaces →',
   },
 ];
 
@@ -355,21 +361,24 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
 
         {/* =========================================================================
             STAGE 3: SERVICES 01 TO 06 (LEFT SIDE, 0.54 - 0.94)
-            (EXACT MATCH TO media_1793194716254_c58ab100.png & media_1793194005845_72a03af4.png)
+            (EXACT 100% MATCH TO REFERENCE IMAGES: media_1793270207145_61a9a273.png,
+             media_1793270231208_bc73db50.png, media_1793270247206_99ffb95e.png,
+             media_1793270295055_61126602.png)
            ========================================================================= */}
         <div
-          className="intro-block stage-3 absolute left-8 sm:left-14 lg:left-20 top-1/2 -translate-y-1/2 max-w-[500px] lg:max-w-[540px] z-20 pointer-events-none transition-all duration-300"
+          className="intro-block stage-3 absolute left-8 sm:left-14 lg:left-24 top-1/2 -translate-y-1/2 max-w-[520px] lg:max-w-[580px] z-20 pointer-events-none transition-all duration-300"
           style={{
             opacity: servicesPanelOpacity,
             transform: `translateY(calc(-50% + ${servicesShiftY}px))`,
             pointerEvents: servicesPanelOpacity > 0.4 ? 'auto' : 'none',
           }}
         >
-          <p className="font-mono font-bold text-xs sm:text-[13px] text-[#64748b] uppercase tracking-[0.22em] mb-4 select-none">
-            SERVICES · <span className="text-[#121212]">0{activeFace + 1}</span> / 06
+          {/* Eyebrow: SERVICES · 01 / 06 */}
+          <p className="font-mono font-medium text-xs sm:text-[13px] text-[#64748b] uppercase tracking-[0.20em] mb-5 sm:mb-6 select-none">
+            SERVICES &middot; <span className="font-bold text-[#121212]">0{activeFace + 1}</span> / 06
           </p>
 
-          <div className="relative min-h-[260px]">
+          <div className="relative min-h-[300px] sm:min-h-[340px]">
             {SERVICES.map((srv, i) => (
               <div
                 key={srv.n}
@@ -379,20 +388,26 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
                     : 'opacity-0 translate-y-4 pointer-events-none'
                 }`}
               >
-                <h3 className="font-heading font-black text-4xl sm:text-5xl md:text-6xl lg:text-[72px] text-[#121212] tracking-tight leading-[0.98] select-none">
-                  {srv.title}
+                <h3 className="font-heading font-black text-4xl sm:text-5xl md:text-[56px] lg:text-[64px] text-[#121212] tracking-[-0.035em] leading-[1.03] select-none">
+                  {srv.titleLines.map((line, idx) => (
+                    <React.Fragment key={idx}>
+                      {idx > 0 && <br />}
+                      {line}
+                    </React.Fragment>
+                  ))}
                 </h3>
 
-                <p className="text-lg sm:text-xl text-[#4a5568] font-normal leading-[1.45] mt-5 select-none">
+                <p className="text-[17px] sm:text-[19px] lg:text-[20px] text-[#4a5568] font-normal leading-[1.45] mt-5 sm:mt-6 select-none max-w-[460px]">
                   {srv.desc}
                 </p>
 
                 <a
                   href={srv.link}
-                  className="font-sans font-bold text-base sm:text-[17px] text-[#0e6f77] hover:text-[#0b5c64] hover:underline inline-flex items-center gap-1.5 mt-6 transition-colors duration-150 cursor-pointer"
+                  className="group font-sans font-semibold text-base sm:text-[17px] text-[#0e6f77] hover:text-[#0b5c64] inline-flex items-center gap-2 mt-6 sm:mt-8 transition-colors duration-150 cursor-pointer w-fit"
                   onClick={() => playSound('hover', soundEnabled)}
                 >
-                  {srv.cta}
+                  <span>{srv.cta.replace('→', '').trim()}</span>
+                  <span className="inline-block transition-transform duration-200 group-hover:translate-x-1.5">→</span>
                 </a>
               </div>
             ))}
