@@ -200,10 +200,13 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
   const bgWhiteFadeOut = Math.min(Math.max((scrollProgress - 0.91) / 0.06, 0), 1);
   const bgWhiteOpacity = bgWhiteFadeIn * (1 - bgWhiteFadeOut);
 
-  // Master Box Container visibility (fades out as Exhibition & Brand zooms in)
-  const boxIn = Math.min(Math.max((scrollProgress - 0.08) / 0.06, 0), 1);
+  // 3D Box Dive into Videos (0.91 -> 1.00):
+  const boxZoomProgress = Math.min(Math.max((scrollProgress - 0.91) / 0.07, 0), 1);
+  const boxZoomEase = boxZoomProgress * boxZoomProgress * (3 - 2 * boxZoomProgress);
+
   // Master Box Container visibility: stays 1.0 so Exhibition & Brand box remains present,
   // then softly fades out only at the apex of the zoom dive (0.98 -> 1.00)
+  const boxIn = Math.min(Math.max((scrollProgress - 0.08) / 0.06, 0), 1);
   const masterBoxOpacity = boxIn * (1 - Math.max((boxZoomProgress - 0.75) / 0.25, 0));
 
   // Stage 1 Bottom-left Text ("Born from colour.")
@@ -219,9 +222,7 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
   const glideProgress = Math.min(Math.max((scrollProgress - 0.42) / 0.10, 0), 1);
   const easeGlide = glideProgress * glideProgress * (3 - 2 * glideProgress);
 
-  // 3D Box Dive into Videos (0.94 -> 1.00):
-  const boxZoomProgress = Math.min(Math.max((scrollProgress - 0.91) / 0.07, 0), 1);
-  const boxZoomEase = boxZoomProgress * boxZoomProgress * (3 - 2 * boxZoomProgress);
+
 
   // Continuous zoom scale: 0.85 -> 1.24 during Stage 1; scales to 1.36 on right side;
   // Then when scrolling on the box (0.94 -> 1.00), zooms into camera (1.36 -> 5.8) to dive into videos!
