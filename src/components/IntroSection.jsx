@@ -197,7 +197,7 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
   // Pure clean studio background (dissolves back to turquoise on transition to Inside the Box)
   const bgWhiteFadeIn = Math.min(Math.max((scrollProgress - 0.06) / 0.08, 0), 1);
   // Studio white background dissolves into dark stage as the box zooms in
-  const bgWhiteFadeOut = Math.min(Math.max((scrollProgress - 0.94) / 0.05, 0), 1);
+  const bgWhiteFadeOut = Math.min(Math.max((scrollProgress - 0.91) / 0.06, 0), 1);
   const bgWhiteOpacity = bgWhiteFadeIn * (1 - bgWhiteFadeOut);
 
   // Master Box Container visibility (fades out as Exhibition & Brand zooms in)
@@ -220,7 +220,7 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
   const easeGlide = glideProgress * glideProgress * (3 - 2 * glideProgress);
 
   // 3D Box Dive into Videos (0.94 -> 1.00):
-  const boxZoomProgress = Math.min(Math.max((scrollProgress - 0.94) / 0.06, 0), 1);
+  const boxZoomProgress = Math.min(Math.max((scrollProgress - 0.91) / 0.07, 0), 1);
   const boxZoomEase = boxZoomProgress * boxZoomProgress * (3 - 2 * boxZoomProgress);
 
   // Continuous zoom scale: 0.85 -> 1.24 during Stage 1; scales to 1.36 on right side;
@@ -259,18 +259,29 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
   // Enters from bottom at 0.54 -> 0.60
   const servicesIn = Math.min(Math.max((scrollProgress - 0.54) / 0.06, 0), 1);
 
-  // When scrolling past Exhibition & Brand (0.88 -> 0.94), the heading scrolls UPWARDS:
-  const headingExitProgress = Math.min(Math.max((scrollProgress - 0.88) / 0.055, 0), 1);
-  const headingExitShiftY = -headingExitProgress * 320; // translates UPWARDS by 320px off-screen!
+  // When scrolling past Exhibition & Brand (0.86 -> 0.92), the heading scrolls UPWARDS:
+  const headingExitProgress = Math.min(Math.max((scrollProgress - 0.86) / 0.05, 0), 1);
+  const headingExitShiftY = -headingExitProgress * 340; // translates UPWARDS by 340px off-screen!
   const headingExitOpacity = 1 - headingExitProgress; // fades out smoothly as it scrolls up
 
   const servicesPanelOpacity = servicesIn * headingExitOpacity;
   const servicesShiftY = (1 - servicesIn) * 60 + headingExitShiftY;
 
   // Service Progress for the 3D Rolling Dice Cube (0.0 to 5.0):
-  // Rolls through services 01 to 06 by p = 0.88, then settles into Exhibition & Brand!
-  const serviceProgress = Math.min(Math.max((scrollProgress - 0.60) / 0.28, 0), 1) * 5.0;
+  // Rolls through services 01 to 06 by p = 0.86, then settles into Exhibition & Brand!
+  const serviceProgress = Math.min(Math.max((scrollProgress - 0.60) / 0.26, 0), 1) * 5.0;
   const activeFace = Math.min(Math.floor((serviceProgress / 5.0) * 5.999), 5);
+
+  const navigateToInside = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    playSound('hover', soundEnabled);
+    if (window.lenis) {
+      window.lenis.scrollTo('#inside', { duration: 1.2 });
+    } else {
+      const el = document.getElementById('inside');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <section id="intro" ref={sectionRef} className="chapter relative h-[720vh]">
@@ -340,7 +351,13 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
               className="inline-flex items-center justify-center bg-transparent hover:bg-black/5 text-[#121212] border border-[#121212] font-heading font-semibold text-[14.5px] sm:text-[15px] px-6 py-3 rounded-xl transition-all duration-200 cursor-pointer"
               style={{ color: '#121212', borderColor: '#121212' }}
               href="#work"
-              onClick={() => playSound('hover', soundEnabled)}
+              onClick={(e) => {
+                    if (srv.link === '#inside') {
+                      navigateToInside(e);
+                    } else {
+                      playSound('hover', soundEnabled);
+                    }
+                  }}
             >
               See the work
             </a>
@@ -464,10 +481,9 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
         >
           <div
             className="relative pointer-events-auto flex items-center justify-center will-change-transform"
-            onClick={() => {
-              if (scrollProgress >= 0.88) {
-                const el = document.getElementById('inside');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            onClick={(e) => {
+              if (scrollProgress >= 0.85) {
+                navigateToInside(e);
               }
             }}
             style={{
