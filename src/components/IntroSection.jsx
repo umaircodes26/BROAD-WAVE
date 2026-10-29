@@ -50,11 +50,11 @@ const SERVICES = [
   },
   {
     n: '06',
-    titleLines: ['Exhibition & Brand'],
+    titleLines: ['Exhibition', '& Brand'],
     title: 'Exhibition & Brand',
     desc: 'Booths and brand spaces, built in 3D first.',
-    link: '#contact',
-    cta: 'See spaces →',
+    link: '#inside',
+    cta: 'Step inside ↓',
   },
 ];
 
@@ -150,8 +150,8 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
             scene = '03 · Services';
             sectionName = 'services';
           } else {
-            const t = Math.min((p - 0.60) / 0.34, 1);
-            frame = Math.round(229 + t * (240 - 229));
+            const t = Math.min((p - 0.60) / 0.28, 1);
+            frame = Math.round(229 + t * (814 - 229));
             scene = '03 · Services';
             sectionName = 'services';
           }
@@ -183,13 +183,13 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
 
   // Pure clean studio background (dissolves back to turquoise on transition to Inside the Box)
   const bgWhiteFadeIn = Math.min(Math.max((scrollProgress - 0.06) / 0.08, 0), 1);
-  const bgWhiteFadeOut = Math.min(Math.max((scrollProgress - 0.88) / 0.08, 0), 1);
+  const bgWhiteFadeOut = Math.min(Math.max((scrollProgress - 0.98) / 0.02, 0), 1);
   const bgWhiteOpacity = bgWhiteFadeIn * (1 - bgWhiteFadeOut);
 
   // Master Box Container visibility (fades out as Exhibition & Brand zooms in)
   const boxIn = Math.min(Math.max((scrollProgress - 0.08) / 0.06, 0), 1);
-  const boxOut = Math.min(Math.max((scrollProgress - 0.88) / 0.06, 0), 1);
-  const masterBoxOpacity = boxIn * (1 - boxOut);
+  // Master Box Container visibility: stays 1.0 so Exhibition & Brand box remains present
+  const masterBoxOpacity = boxIn;
 
   // Stage 1 Bottom-left Text ("Born from colour.")
   const stage1In = Math.min(Math.max((scrollProgress - 0.08) / 0.06, 0), 1);
@@ -230,14 +230,20 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
   const stage2ShiftY = (1 - stage2In) * 35 - stage2Out * 75; // slides up into top-left on exit!
 
   // Stage 3 Services 01 to 06:
-  // In media_1793194716254_c58ab100.png, Services enters from bottom while Stage 2 exits!
+  // Enters from bottom at 0.54 -> 0.60
   const servicesIn = Math.min(Math.max((scrollProgress - 0.54) / 0.06, 0), 1);
-  const servicesOut = Math.min(Math.max((scrollProgress - 0.94) / 0.05, 0), 1);
-  const servicesPanelOpacity = servicesIn * (1 - servicesOut);
-  const servicesShiftY = (1 - servicesIn) * 60; // slides in from below
 
-  // Service Progress for the 3D Rolling Dice Cube (0.0 to 5.0)
-  const serviceProgress = Math.min(Math.max((scrollProgress - 0.60) / 0.34, 0), 1) * 5.0;
+  // When scrolling past Exhibition & Brand (0.92 -> 1.00), the heading scrolls UPWARDS:
+  const headingExitProgress = Math.min(Math.max((scrollProgress - 0.92) / 0.07, 0), 1);
+  const headingExitShiftY = -headingExitProgress * 240; // translates UPWARDS by 240px!
+  const headingExitOpacity = 1 - headingExitProgress; // fades out smoothly as it scrolls up
+
+  const servicesPanelOpacity = servicesIn * headingExitOpacity;
+  const servicesShiftY = (1 - servicesIn) * 60 + headingExitShiftY;
+
+  // Service Progress for the 3D Rolling Dice Cube (0.0 to 5.0):
+  // Rolls through services 01 to 06 by p = 0.88, then settles into Exhibition & Brand!
+  const serviceProgress = Math.min(Math.max((scrollProgress - 0.60) / 0.28, 0), 1) * 5.0;
   const activeFace = Math.min(Math.floor((serviceProgress / 5.0) * 5.999), 5);
 
   return (
@@ -406,8 +412,10 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
                   className="group font-sans font-semibold text-base sm:text-[17px] text-[#0e6f77] hover:text-[#0b5c64] inline-flex items-center gap-2 mt-6 sm:mt-8 transition-colors duration-150 cursor-pointer w-fit"
                   onClick={() => playSound('hover', soundEnabled)}
                 >
-                  <span>{srv.cta.replace('→', '').trim()}</span>
-                  <span className="inline-block transition-transform duration-200 group-hover:translate-x-1.5">→</span>
+                  <span>{srv.cta.replace(/[→↓]/, '').trim()}</span>
+                  <span className="inline-block transition-transform duration-200 group-hover:translate-x-1.5 group-hover:translate-y-0.5">
+                    {srv.cta.includes('↓') ? '↓' : '→'}
+                  </span>
                 </a>
               </div>
             ))}
@@ -505,27 +513,7 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
           </div>
         </div>
 
-        {/* =========================================================================
-            STAGE 3 -> 4 TRANSITION: ZOOMING "EXHIBITION & BRAND"
-            (EXACT MATCH TO media_1793195425332_82063534.png)
-            - As user scrolls past Service 06 (Exhibition & Brand), this text scales up
-              from the cube towards the camera, transitioning to turquoise canvas and
-              taking the user into "Every industry. One studio."
-           ========================================================================= */}
-        {scrollProgress > 0.88 && (
-          <div
-            className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none z-30 will-change-transform"
-            style={{
-              opacity: Math.min((scrollProgress - 0.88) / 0.05, 1),
-              transform: `translate3d(${Math.max(1 - (scrollProgress - 0.88) / 0.08, 0) * 16}vw, 0, 0) scale(${1.0 + Math.max((scrollProgress - 0.88) / 0.08, 0) * 1.5})`,
-            }}
-          >
-            <div className="font-heading font-black text-6xl sm:text-8xl md:text-[130px] lg:text-[170px] xl:text-[210px] text-white/55 tracking-[0.06em] leading-[0.88] text-center drop-shadow-[0_0_40px_rgba(255,255,255,0.7)]">
-              <div>EXHIBITION</div>
-              <div>& BRAND</div>
-            </div>
-          </div>
-        )}
+        {/* Zooming overlay removed per user request: Exhibition & Brand 3D box stays pinned here */}
 
         {/* Bottom Scroll Hint */}
         <div
