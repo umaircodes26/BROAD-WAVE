@@ -33,10 +33,10 @@ export const SHOWCASE_CATEGORIES = [
     num: '01 / 08',
     title: 'Footwear',
     subTag: 'LAUNCH FILM · PREMIUM SNEAKER',
-    frame: 817,
+    frame: 850,
     bgTone: '#1e1a12',
     accentColor: '#38bdf8',
-    hasBakedUi: true,
+    hasBakedUi: false,
   },
   {
     id: 'fragrance',
@@ -81,7 +81,7 @@ export const SHOWCASE_CATEGORIES = [
   },
 ];
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 5;
 
 export default function InsideSection({ soundEnabled, onScrollProgressUpdate }) {
   const sectionRef = useRef(null);
@@ -104,18 +104,7 @@ export default function InsideSection({ soundEnabled, onScrollProgressUpdate }) 
           setProgress(p);
 
           const stepPos = p * (TOTAL_STEPS - 1);
-          let catIdx = 0;
-          if (stepPos <= 1.4) {
-            catIdx = 0; // Footwear (Image or Video)
-          } else if (stepPos <= 2.4) {
-            catIdx = 1; // Fragrance Video
-          } else if (stepPos <= 3.4) {
-            catIdx = 2; // Skincare Video
-          } else if (stepPos <= 4.4) {
-            catIdx = 3; // Electronics Image
-          } else {
-            catIdx = 4; // Advertising Video
-          }
+          const catIdx = Math.min(Math.floor(stepPos + 0.4), TOTAL_STEPS - 1);
 
           setActiveIdx(catIdx);
 
@@ -170,13 +159,9 @@ export default function InsideSection({ soundEnabled, onScrollProgressUpdate }) 
     if (!sectionRef.current) return;
     const section = sectionRef.current;
     
-    // Map category index to step index
-    let stepTarget = idx;
-    if (idx >= 1) stepTarget = idx + 1; // Footwear has 2 steps (0 & 1)
-
     const scrollTarget =
       section.offsetTop +
-      (stepTarget / (TOTAL_STEPS - 1)) * (section.offsetHeight - window.innerHeight);
+      (idx / (TOTAL_STEPS - 1)) * (section.offsetHeight - window.innerHeight);
 
     window.scrollTo({
       top: scrollTarget,
@@ -206,52 +191,40 @@ export default function InsideSection({ soundEnabled, onScrollProgressUpdate }) 
            ===================================================================== */}
         <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-auto">
           
-          {/* Step 0: PEHLI IMAGE - Footwear (Air Jordan 12 Screenshot) */}
+          {/* Step 0: DIRECT FOOTWEAR VIDEO (D:\images\gemini_generated_video_89c10a2d.mp4) */}
           <div
             className="absolute inset-0 flex items-center justify-center transition-all duration-100 ease-out"
             style={getStepStyle(0)}
           >
-            <InteractiveParallaxStage
-              image={footwearImg}
-              alt="Footwear - Air Jordan 12 Premium Sneaker Showcase"
-              glowTone="rgba(245, 158, 11, 0.12)"
+            <FootwearStage
+              isActive={Math.abs(currentStepPos - 0) < 0.8}
             />
           </div>
 
-          {/* Step 1: FOOTWEAR VIDEO - gemini_generated_video_89c10a2d.mp4 */}
+          {/* Step 1: FRAGRANCE VIDEO (Liquid_hand_holding_perfume_bottle_8df488cc.mp4) */}
           <div
             className="absolute inset-0 flex items-center justify-center transition-all duration-100 ease-out"
             style={getStepStyle(1)}
           >
-            <FootwearStage
+            <FragranceStage
               isActive={Math.abs(currentStepPos - 1) < 0.8}
             />
           </div>
 
-          {/* Step 2: FRAGRANCE VIDEO - Liquid_hand_holding_perfume_bottle_8df488cc.mp4 */}
+          {/* Step 2: SKINCARE VIDEO (Cosmetic_jar_opening_with_water_b3f4d9e9.mp4) */}
           <div
             className="absolute inset-0 flex items-center justify-center transition-all duration-100 ease-out"
             style={getStepStyle(2)}
           >
-            <FragranceStage
+            <SkincareStage
               isActive={Math.abs(currentStepPos - 2) < 0.8}
             />
           </div>
 
-          {/* Step 3: Skincare Video (D:\images\Cosmetic_jar_opening_with_water_b3f4d9e9.mp4) */}
+          {/* Step 3: ELECTRONICS (Exploded View Smartphone) */}
           <div
             className="absolute inset-0 flex items-center justify-center transition-all duration-100 ease-out"
             style={getStepStyle(3)}
-          >
-            <SkincareStage
-              isActive={Math.abs(currentStepPos - 3) < 0.8}
-            />
-          </div>
-
-          {/* Step 4: Electronics (Exploded view smartphone) */}
-          <div
-            className="absolute inset-0 flex items-center justify-center transition-all duration-100 ease-out"
-            style={getStepStyle(4)}
           >
             <InteractiveParallaxStage
               image={electronicsImg}
@@ -260,13 +233,13 @@ export default function InsideSection({ soundEnabled, onScrollProgressUpdate }) 
             />
           </div>
 
-          {/* Step 5: Advertising Video (D:\images\Products_floating_in_commercial_…_f706c028.mp4) */}
+          {/* Step 4: ADVERTISING VIDEO (Products_floating_in_commercial_…_f706c028.mp4) */}
           <div
             className="absolute inset-0 flex items-center justify-center transition-all duration-100 ease-out"
-            style={getStepStyle(5)}
+            style={getStepStyle(4)}
           >
             <AdvertisingStage
-              isActive={Math.abs(currentStepPos - 5) < 0.8}
+              isActive={Math.abs(currentStepPos - 4) < 0.8}
             />
           </div>
         </div>

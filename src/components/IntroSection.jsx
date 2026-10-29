@@ -146,14 +146,27 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
             sectionName = 'intro';
           } else if (p <= 0.60) {
             const t = (p - 0.54) / 0.06;
-            frame = Math.round(215 + t * (229 - 215)); // Exactly Frame 0229 in media_1793194716254_c58ab100.png!
+            frame = Math.round(215 + t * (229 - 215)); // Frame 0229
             scene = '03 · Services';
+            sectionName = 'services';
+          } else if (p <= 0.88) {
+            // Rolling through Services 01 to 06
+            const t = Math.min((p - 0.60) / 0.28, 1);
+            frame = Math.round(229 + t * (814 - 229)); // Reaches frame 0814 at Service 06!
+            scene = '03 · Services';
+            sectionName = 'services';
+          } else if (p <= 0.94) {
+            // Heading scrolls UP, 3D box stays isolated: EXACT MATCH TO media_1793273728318_41012094.jpg!
+            const t = (p - 0.88) / 0.06;
+            frame = Math.round(814 + t * (850 - 814)); // Reaches frame 0850!
+            scene = '04 · Inside the box';
             sectionName = 'services';
           } else {
-            const t = Math.min((p - 0.60) / 0.28, 1);
-            frame = Math.round(229 + t * (814 - 229));
-            scene = '03 · Services';
-            sectionName = 'services';
+            // Box zooms in and dives into showcase videos!
+            const t = (p - 0.94) / 0.06;
+            frame = Math.round(850 + t * (860 - 850));
+            scene = '04 · Inside the box';
+            sectionName = 'industries';
           }
 
           if (onScrollProgressUpdate) {
@@ -183,13 +196,15 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
 
   // Pure clean studio background (dissolves back to turquoise on transition to Inside the Box)
   const bgWhiteFadeIn = Math.min(Math.max((scrollProgress - 0.06) / 0.08, 0), 1);
-  const bgWhiteFadeOut = Math.min(Math.max((scrollProgress - 0.98) / 0.02, 0), 1);
+  // Studio white background dissolves into dark stage as the box zooms in
+  const bgWhiteFadeOut = Math.min(Math.max((scrollProgress - 0.94) / 0.05, 0), 1);
   const bgWhiteOpacity = bgWhiteFadeIn * (1 - bgWhiteFadeOut);
 
   // Master Box Container visibility (fades out as Exhibition & Brand zooms in)
   const boxIn = Math.min(Math.max((scrollProgress - 0.08) / 0.06, 0), 1);
-  // Master Box Container visibility: stays 1.0 so Exhibition & Brand box remains present
-  const masterBoxOpacity = boxIn;
+  // Master Box Container visibility: stays 1.0 so Exhibition & Brand box remains present,
+  // then softly fades out only at the apex of the zoom dive (0.98 -> 1.00)
+  const masterBoxOpacity = boxIn * (1 - Math.max((boxZoomProgress - 0.75) / 0.25, 0));
 
   // Stage 1 Bottom-left Text ("Born from colour.")
   const stage1In = Math.min(Math.max((scrollProgress - 0.08) / 0.06, 0), 1);
@@ -204,8 +219,13 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
   const glideProgress = Math.min(Math.max((scrollProgress - 0.42) / 0.10, 0), 1);
   const easeGlide = glideProgress * glideProgress * (3 - 2 * glideProgress);
 
-  // Continuous zoom scale: 0.85 -> 1.24 during Stage 1; scales to 1.36 on right side
-  let zoomScale = 0.85;
+  // 3D Box Dive into Videos (0.94 -> 1.00):
+  const boxZoomProgress = Math.min(Math.max((scrollProgress - 0.94) / 0.06, 0), 1);
+  const boxZoomEase = boxZoomProgress * boxZoomProgress * (3 - 2 * boxZoomProgress);
+
+  // Continuous zoom scale: 0.85 -> 1.24 during Stage 1; scales to 1.36 on right side;
+  // Then when scrolling on the box (0.94 -> 1.00), zooms into camera (1.36 -> 5.8) to dive into videos!
+  let zoomScale = 1.36;
   if (scrollProgress <= 0.08) {
     zoomScale = 0.85;
   } else if (scrollProgress <= 0.28) {
@@ -218,9 +238,15 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
     const t = (scrollProgress - 0.42) / 0.12;
     const ease = t * t * (3 - 2 * t);
     zoomScale = 1.24 + ease * 0.12; // 1.24 -> 1.36
-  } else {
+  } else if (scrollProgress <= 0.94) {
     zoomScale = 1.36;
+  } else {
+    // Zooms in towards camera as user scrolls on the box into videos!
+    zoomScale = 1.36 + boxZoomEase * 4.4;
   }
+
+  // Box horizontal glide: centers towards camera as it zooms in
+  const boxGlideX = easeGlide * 23 * (1 - boxZoomEase * 0.70);
 
   // Stage 2 Left Text: "Engineered like a product. Rendered like a film."
   // In media_1793194716254_c58ab100.png, it smoothly slides UP as Services enters!
@@ -233,9 +259,9 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
   // Enters from bottom at 0.54 -> 0.60
   const servicesIn = Math.min(Math.max((scrollProgress - 0.54) / 0.06, 0), 1);
 
-  // When scrolling past Exhibition & Brand (0.92 -> 1.00), the heading scrolls UPWARDS:
-  const headingExitProgress = Math.min(Math.max((scrollProgress - 0.92) / 0.07, 0), 1);
-  const headingExitShiftY = -headingExitProgress * 240; // translates UPWARDS by 240px!
+  // When scrolling past Exhibition & Brand (0.88 -> 0.94), the heading scrolls UPWARDS:
+  const headingExitProgress = Math.min(Math.max((scrollProgress - 0.88) / 0.055, 0), 1);
+  const headingExitShiftY = -headingExitProgress * 320; // translates UPWARDS by 320px off-screen!
   const headingExitOpacity = 1 - headingExitProgress; // fades out smoothly as it scrolls up
 
   const servicesPanelOpacity = servicesIn * headingExitOpacity;
@@ -438,8 +464,15 @@ export default function IntroSection({ soundEnabled, onOpenProjectModal, onScrol
         >
           <div
             className="relative pointer-events-auto flex items-center justify-center will-change-transform"
+            onClick={() => {
+              if (scrollProgress >= 0.88) {
+                const el = document.getElementById('inside');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
             style={{
-              transform: `translate3d(${easeGlide * 23}vw, 0, 0) scale(${zoomScale})`,
+              transform: `translate3d(${boxGlideX}vw, 0, 0) scale(${zoomScale})`,
+              cursor: scrollProgress >= 0.88 ? 'pointer' : 'default',
             }}
           >
             <div className="relative w-[340px] h-[340px] sm:w-[420px] sm:h-[420px] md:w-[480px] md:h-[480px] lg:w-[540px] lg:h-[540px] flex items-center justify-center">
